@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+  <title>컴퓨터 사용 신청</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    .box { margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+  <h1>컴퓨터 사용 신청</h1>
+
+  <form method="POST" action="/">
+    <input type="text" name="name" placeholder="이름 입력" required>
+    <button type="submit">신청</button>
+  </form>
+
+  <div class="box">
+    <h3>신청자 목록 ({{ applicants | length }}명)</h3>
+    <ul>
+      {% for person in applicants %}
+        <li>{{ person }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <form method="POST" action="/draw">
+    <button type="submit">무작위 추첨 (4명)</button>
+  </form>
+
+  <div class="box">
+    <h3>오늘의 당첨자</h3>
+    <ul>
+      {% for winner in winners %}
+        <li><strong>{{ winner }}</strong></li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <form method="POST" action="/reset">
+    <button type="submit" style="color:red;">모두 초기화</button>
+  </form>
+</body>
+</html>
