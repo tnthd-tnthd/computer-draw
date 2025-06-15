@@ -1,0 +1,16 @@
+
+<!doctype html>
+<html>
+<head>
+  <title>당첨 이력</title>
+</head>
+<body>
+  <h1>📅 당첨자 이력</h1>
+  <a href="/">← 돌아가기</a>
+  <ul>
+    {% for date, names in history.items() %}
+      <li><strong>{{ date }}</strong>: {{ names | join(', ') }}</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>
