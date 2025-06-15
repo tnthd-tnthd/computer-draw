@@ -1,22 +1,15 @@
 
 <!doctype html>
 <html>
-<head>
-  <title>컴퓨터 추첨</title>
-</head>
+<head><title>컴퓨터 추첨</title></head>
 <body>
   <h1>💻 컴퓨터 신청</h1>
   <form action="/apply" method="post">
     <input type="text" name="name" placeholder="이름 입력" required>
     <button type="submit">신청</button>
   </form>
-
   <h2>신청자 목록 ({{ applicants|length }}명)</h2>
-  <ul>
-    {% for name in applicants %}
-      <li>{{ name }}</li>
-    {% endfor %}
-  </ul>
+  <ul>{% for name in applicants %}<li>{{ name }}</li>{% endfor %}</ul>
 
   {% if is_admin %}
     <form action="/draw" method="post">
@@ -32,11 +25,7 @@
 
   {% if winners %}
     <h2>🎉 당첨자</h2>
-    <ul>
-      {% for name in winners %}
-        <li>{{ name }}</li>
-      {% endfor %}
-    </ul>
+    <ul>{% for name in winners %}<li>{{ name }}</li>{% endfor %}</ul>
   {% endif %}
 
   <p><a href="/history">📅 이력 보기</a></p>
