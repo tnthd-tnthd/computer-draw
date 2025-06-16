@@ -1,0 +1,21 @@
+
+<!doctype html>
+<html>
+<head><title>관리자 설정</title></head>
+<body>
+  <h1>🔧 관리자 전용 페이지</h1>
+  <form method="post">
+    <table border="1">
+      <tr><th>사용자</th><th>가중치</th></tr>
+      {% for user in users %}
+      <tr>
+        <td>{{ user }}</td>
+        <td><input name="{{ user }}" value="{{ weights.get(user, 1) }}" size="3"></td>
+      </tr>
+      {% endfor %}
+    </table>
+    <button type="submit">저장</button>
+  </form>
+  <a href="/">← 메인으로</a>
+</body>
+</html>
