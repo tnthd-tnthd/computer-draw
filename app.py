@@ -21,7 +21,7 @@ def index():
 @app.route("/apply", methods=["POST"])
 def apply():
     name = request.form.get("name")
-    choices = request.form.getlist("choices")  # 복수 선택 처리
+    choices = request.form.getlist("choices")
 
     if name and choices and not any(a['name'] == name for a in applicants):
         applicants.append({'name': name, 'choices': choices})
@@ -42,24 +42,32 @@ def draw():
     global winners
     winners = []
 
-    for applicant in applicants:
-        if applicant['choices']:
-            selected = random.choice(applicant['choices'])
-            winners.append({'name': applicant['name'], 'result': selected})
+    try:
+        print("== 추첨 시작 ==")
+        for applicant in applicants:
+            print(f"지원자: {applicant}")
+            if isinstance(applicant, dict) and 'choices' in applicant and applicant['choices']:
+                selected = random.choice(applicant['choices'])
+                winners.append({'name': applicant['name'], 'result': selected})
+            else:
+                print(f"지원자 정보 누락 또는 선택 없음: {applicant}")
 
-    # 기록 저장
-    history = []
-    if os.path.exists("history.json"):
-        with open("history.json", "r", encoding="utf-8") as f:
-            history = json.load(f)
+        # 기록 저장
+        history = []
+        if os.path.exists("history.json"):
+            with open("history.json", "r", encoding="utf-8") as f:
+                history = json.load(f)
 
-    history.append({
-        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "winners": winners
-    })
+        history.append({
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "winners": winners
+        })
 
-    with open("history.json", "w", encoding="utf-8") as f:
-        json.dump(history, f, ensure_ascii=False, indent=2)
+        with open("history.json", "w", encoding="utf-8") as f:
+            json.dump(history, f, ensure_ascii=False, indent=2)
+
+    except Exception as e:
+        print("❌ 오류 발생:", e)
 
     return redirect(url_for("index"))
 
