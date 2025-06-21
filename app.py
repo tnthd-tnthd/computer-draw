@@ -13,8 +13,8 @@ app = Flask(__name__)
 app.secret_key = 'your-secret-key'
 
 applicants = []  # list of dicts: {"name": str, "subjects": list}
-winners = {}  # key: subject, value: winner name
-winners = []
+winners = {}
+winners = {}
 ADMIN_PASSWORD = "secret1234"
 
 @app.route("/")
@@ -35,9 +35,9 @@ def apply():
 @app.route("/clear", methods=["POST"])
 def clear():
     global applicants, winners
-    applicants = []  # list of dicts: {"name": str, "subjects": list}
-winners = {}  # key: subject, value: winner name
-    winners = []
+applicants = []  # list of dicts: {"name": str, "subjects": list}
+winners = {}
+winners = {}
     return redirect(url_for("index"))
 
 @app.route("/draw", methods=["POST"])
@@ -53,15 +53,15 @@ def draw():
             selected[subject] = random.choice(candidates)
         else:
             selected[subject] = "신청자 없음"
-    winners = selected
+winners = {}
     if not session.get("is_admin"):
         return "관리자만 사용할 수 있습니다.", 403
 
     global winners
     if len(applicants) <= 4:
-        winners = applicants[:]
+winners = {}
     else:
-        winners = random.sample(applicants, 4)
+winners = {}
 
     today = (datetime.utcnow() + timedelta(hours=9)).strftime('%Y-%m-%d')
     try:
@@ -108,9 +108,9 @@ def auto_clear_applicants():
         if now.hour == 0 and now.minute == 0:
             print("[자동 초기화] 신청자 목록을 초기화합니다 (KST 자정).")
             global applicants, winners
-            applicants = []  # list of dicts: {"name": str, "subjects": list}
-winners = {}  # key: subject, value: winner name
-            winners = []
+applicants = []  # list of dicts: {"name": str, "subjects": list}
+winners = {}
+winners = {}
             time.sleep(60)
         time.sleep(30)
 
@@ -134,7 +134,7 @@ def auto_draw():
             selected[subject] = random.choice(candidates)
         else:
             selected[subject] = "신청자 없음"
-    winners = selected
+winners = {}
     print("✅ 자동 추첨 완료")
 
 @scheduler.scheduled_job(CronTrigger(hour=0, minute=0))
