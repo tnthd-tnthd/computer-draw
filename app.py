@@ -22,7 +22,6 @@ def index():
 def apply():
     name = request.form.get("name")
     choices = request.form.getlist("choices")
-
     if name and choices and not any(a['name'] == name for a in applicants):
         applicants.append({'name': name, 'choices': choices})
     return redirect(url_for("index"))
@@ -41,16 +40,16 @@ def draw():
 
     global winners
     winners = []
+    already_won = set()
+    categories = ["수-1", "수-2", "수-3", "수-4"]
 
     try:
-        print("== 추첨 시작 ==")
-        for applicant in applicants:
-            print(f"지원자: {applicant}")
-            if isinstance(applicant, dict) and 'choices' in applicant and applicant['choices']:
-                selected = random.choice(applicant['choices'])
-                winners.append({'name': applicant['name'], 'result': selected})
-            else:
-                print(f"지원자 정보 누락 또는 선택 없음: {applicant}")
+        for category in categories:
+            eligible = [a for a in applicants if category in a['choices'] and a['name'] not in already_won]
+            if eligible:
+                selected = random.choice(eligible)
+                winners.append({'name': selected['name'], 'result': category})
+                already_won.add(selected['name'])
 
         # 기록 저장
         history = []
