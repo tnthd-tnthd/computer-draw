@@ -1,12 +1,40 @@
 
 <!doctype html>
 <html>
-<head><title>관리자 로그인</title></head>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>관리자 로그인</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        input, button, select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
 <body>
+<div class="container">
+
   <h1>🔐 관리자 로그인</h1>
   <form action="/login" method="post">
     <input type="password" name="password" placeholder="비밀번호 입력">
     <button type="submit">로그인</button>
   </form>
+
+</div>
 </body>
 </html>
