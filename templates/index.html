@@ -1,11 +1,41 @@
 
 <!doctype html>
 <html>
-<head><title>컴퓨터 추첨</title></head>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>컴퓨터 추첨</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        input, button, select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
 <body>
+<div class="container">
+
   <h1>💻 컴퓨터 신청</h1>
   <form action="/apply" method="post">
-    <input type="text" name="name" placeholder="이름 입력" required>
+    <input type="text" name="name" placeholder="이름 입력" required><br>
+    <label><input type="checkbox" name="choices" value="수-1"> 수-1</label>
+    <label><input type="checkbox" name="choices" value="수-2"> 수-2</label>
+    <label><input type="checkbox" name="choices" value="수-3"> 수-3</label>
+    <label><input type="checkbox" name="choices" value="수-4"> 수-4</label><br>
     <button type="submit">신청</button>
   </form>
   <h2>신청자 목록 ({{ applicants|length }}명)</h2>
@@ -29,5 +59,7 @@
   {% endif %}
 
   <p><a href="/history">📅 이력 보기</a></p>
+
+</div>
 </body>
 </html>

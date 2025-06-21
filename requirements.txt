@@ -1,4 +1,2 @@
-Flask
-apscheduler
-pytz
+flask
 gunicorn

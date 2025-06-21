@@ -1,8 +1,34 @@
 
 <!doctype html>
 <html>
-<head><title>관리자 설정</title></head>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>관리자 설정</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        input, button, select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
 <body>
+<div class="container">
+
   <h1>🔧 관리자 전용 페이지</h1>
   <form method="post">
     <table border="1">
@@ -17,5 +43,7 @@
     <button type="submit">저장</button>
   </form>
   <a href="/">← 메인으로</a>
+
+</div>
 </body>
 </html>
