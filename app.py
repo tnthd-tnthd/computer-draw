@@ -119,7 +119,7 @@ threading.Thread(target=auto_clear_applicants, daemon=True).start()
 if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5000))
-    
+
 scheduler = BackgroundScheduler(timezone=timezone("Asia/Seoul"))
 
 @scheduler.scheduled_job(CronTrigger(hour=20, minute=50))
