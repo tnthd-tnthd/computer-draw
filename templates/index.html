@@ -5,7 +5,11 @@
 <body>
   <h1>💻 컴퓨터 신청</h1>
   <form action="/apply" method="post">
-    <input type="text" name="name" placeholder="이름 입력" required>
+    <input type="text" name="name" placeholder="이름 입력" required><br>
+    <label><input type="checkbox" name="choices" value="수-1"> 수-1</label>
+    <label><input type="checkbox" name="choices" value="수-2"> 수-2</label>
+    <label><input type="checkbox" name="choices" value="수-3"> 수-3</label>
+    <label><input type="checkbox" name="choices" value="수-4"> 수-4</label><br>
     <button type="submit">신청</button>
   </form>
   <h2>신청자 목록 ({{ applicants|length }}명)</h2>

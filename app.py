@@ -1,9 +1,8 @@
 
 from flask import Flask, render_template, request, redirect, url_for, session
 import random, json
-from datetime import datetime, timedelta
-import threading
-import time
+from datetime import datetime
+import os
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key'
@@ -14,13 +13,18 @@ ADMIN_PASSWORD = "secret1234"
 
 @app.route("/")
 def index():
-    return render_template("index.html", applicants=applicants, winners=winners, is_admin=session.get("is_admin", False))
+    return render_template("index.html", 
+                           applicants=[a['name'] for a in applicants], 
+                           winners=[f"{w['name']} - {w['result']}" for w in winners], 
+                           is_admin=session.get("is_admin", False))
 
 @app.route("/apply", methods=["POST"])
 def apply():
     name = request.form.get("name")
-    if name and name not in applicants:
-        applicants.append(name)
+    choices = request.form.getlist("choices")  # 복수 선택 처리
+
+    if name and choices and not any(a['name'] == name for a in applicants):
+        applicants.append({'name': name, 'choices': choices})
     return redirect(url_for("index"))
 
 @app.route("/clear", methods=["POST"])
@@ -36,59 +40,47 @@ def draw():
         return "관리자만 사용할 수 있습니다.", 403
 
     global winners
-    if len(applicants) <= 4:
-        winners = applicants[:]
-    else:
-        winners = random.sample(applicants, 4)
+    winners = []
 
-    today = (datetime.utcnow() + timedelta(hours=9)).strftime('%Y-%m-%d')
-    try:
+    for applicant in applicants:
+        if applicant['choices']:
+            selected = random.choice(applicant['choices'])
+            winners.append({'name': applicant['name'], 'result': selected})
+
+    # 기록 저장
+    history = []
+    if os.path.exists("history.json"):
         with open("history.json", "r", encoding="utf-8") as f:
             history = json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        history = {}
 
-    history[today] = winners
+    history.append({
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "winners": winners
+    })
 
     with open("history.json", "w", encoding="utf-8") as f:
         json.dump(history, f, ensure_ascii=False, indent=2)
 
     return redirect(url_for("index"))
 
+@app.route("/history")
+def show_history():
+    if not os.path.exists("history.json"):
+        return render_template("history.html", history=[])
+    with open("history.json", "r", encoding="utf-8") as f:
+        history = json.load(f)
+    return render_template("history.html", history=history)
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        if request.form.get("password") == ADMIN_PASSWORD:
+        password = request.form.get("password")
+        if password == ADMIN_PASSWORD:
             session["is_admin"] = True
             return redirect(url_for("index"))
-        else:
-            return "비밀번호가 틀렸습니다. <a href='/login'>다시 시도</a>"
     return render_template("login.html")
 
 @app.route("/logout")
 def logout():
     session.pop("is_admin", None)
     return redirect(url_for("index"))
-
-@app.route("/history")
-def history():
-    try:
-        with open("history.json", "r", encoding="utf-8") as f:
-            history = json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        history = {}
-    return render_template("history.html", history=history)
-
-# ✅ 자정 자동 초기화 (KST 기준)
-def auto_clear_applicants():
-    while True:
-        now = datetime.utcnow() + timedelta(hours=9)  # KST
-        if now.hour == 0 and now.minute == 0:
-            print("[자동 초기화] 신청자 목록을 초기화합니다 (KST 자정).")
-            global applicants, winners
-            applicants = []
-            winners = []
-            time.sleep(60)
-        time.sleep(30)
-
-threading.Thread(target=auto_clear_applicants, daemon=True).start()
