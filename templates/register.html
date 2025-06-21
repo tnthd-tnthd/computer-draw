@@ -1,41 +1,13 @@
 
 <!doctype html>
 <html>
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>회원가입</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 20px;
-            font-family: sans-serif;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        input, button, select {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            margin-bottom: 10px;
-            box-sizing: border-box;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-    </style>
-</head>
+<head><title>회원가입</title></head>
 <body>
-<div class="container">
-
   <h1>🆕 회원가입</h1>
   <form action="/register" method="post">
     <input name="username" placeholder="아이디" required>
     <input name="password" type="password" placeholder="비밀번호" required>
     <button type="submit">가입하기</button>
   </form>
-
-</div>
 </body>
 </html>
