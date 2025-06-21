@@ -3,6 +3,8 @@ from flask import Flask, render_template, request, redirect, url_for, session
 import random, json
 from datetime import datetime
 import os
+from apscheduler.schedulers.background import BackgroundScheduler
+from pytz import timezone
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key'
@@ -34,10 +36,13 @@ def clear():
     return redirect(url_for("index"))
 
 @app.route("/draw", methods=["POST"])
-def draw():
+def draw_manual():
     if not session.get("is_admin"):
         return "관리자만 사용할 수 있습니다.", 403
+    perform_draw()
+    return redirect(url_for("index"))
 
+def perform_draw():
     global winners
     winners = []
     already_won = set()
@@ -51,24 +56,35 @@ def draw():
                 winners.append({'name': selected['name'], 'result': category})
                 already_won.add(selected['name'])
 
-        # 기록 저장
         history = []
         if os.path.exists("history.json"):
             with open("history.json", "r", encoding="utf-8") as f:
                 history = json.load(f)
 
         history.append({
-            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "timestamp": datetime.now(timezone("Asia/Seoul")).strftime("%Y-%m-%d %H:%M:%S"),
             "winners": winners
         })
 
         with open("history.json", "w", encoding="utf-8") as f:
             json.dump(history, f, ensure_ascii=False, indent=2)
 
+        print("✅ 자동 추첨 완료")
+
     except Exception as e:
         print("❌ 오류 발생:", e)
 
-    return redirect(url_for("index"))
+def clear_applicants():
+    global applicants, winners
+    applicants = []
+    winners = []
+    print("🧹 신청자 및 당첨자 초기화 완료")
+
+# 스케줄러 설정
+scheduler = BackgroundScheduler(timezone="Asia/Seoul")
+scheduler.add_job(perform_draw, 'cron', hour=20, minute=50)
+scheduler.add_job(clear_applicants, 'cron', hour=0, minute=0)
+scheduler.start()
 
 @app.route("/history")
 def show_history():
